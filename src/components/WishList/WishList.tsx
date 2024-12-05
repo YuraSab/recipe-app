@@ -22,7 +22,7 @@ const WishList = () => {
     return (
         <div>
             {/*    <RecipeList recipes={getRecipesForCurrentPage()} categoryFilters={categoryFilters}/>*/}
-            <RecipeList recipes={wishlist} categoryFilters={[]}/>
+            <RecipeList recipes={wishlist} categoryFilters={[]} choose={false}/>
 
             <div className={styles.ingredientBlock}>
                 <h2>Інгредієнти для приготування:</h2>

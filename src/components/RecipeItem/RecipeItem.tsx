@@ -8,8 +8,9 @@ import {ButtonAction} from "../../ui/Buttons/Buttons";
 
 type RecipeItemProps = {
     recipe: Recipe,
+    choose?: boolean
 };
-const RecipeItem: React.FC<RecipeItemProps> = ({recipe}) => {
+const RecipeItem: React.FC<RecipeItemProps> = ({recipe, choose = true}) => {
 
     const dispatch = useDispatch();
 
@@ -25,7 +26,8 @@ const RecipeItem: React.FC<RecipeItemProps> = ({recipe}) => {
             <img src={recipe.strMealThumb} alt=""/>
             <p>Категорія: <b>{recipe.strCategory}</b></p>
             <p>Походження: <b>{recipe.strArea}</b></p>
-            <ButtonAction text={"Додати до списку"} action={handleAddToWishlist}/>
+            { choose && <ButtonAction text={"Додати до списку"} action={handleAddToWishlist}/> }
+
         </div>
     );
 };

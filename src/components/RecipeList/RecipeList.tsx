@@ -6,8 +6,9 @@ import styles from "./RecipeList.module.css";
 type RecipeListProps = {
     recipes: Recipe[],
     categoryFilters: string[],
+    choose?: boolean
 };
-const RecipeList: React.FC<RecipeListProps> = ({recipes, categoryFilters}) => {
+const RecipeList: React.FC<RecipeListProps> = ({recipes, categoryFilters, choose = true}) => {
 
     const filteredRecipes = categoryFilters.length > 0
         ? recipes.filter((recipe) => categoryFilters.includes(recipe.strCategory))
@@ -19,7 +20,7 @@ const RecipeList: React.FC<RecipeListProps> = ({recipes, categoryFilters}) => {
     return (
         <div className={styles.cardList}>
             {
-                recipes.map((recipe) => <RecipeItem recipe={recipe} key={recipe.idMeal}/>)
+                recipes.map((recipe) => <RecipeItem recipe={recipe} key={recipe.idMeal} choose={choose}/>)
             }
         </div>
     );

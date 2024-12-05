@@ -59,15 +59,40 @@ const Pagination: React.FC<PaginationProps> = ({currentPage, pageNumber, setCurr
             setCurrentPage(pageNumber);
     }
 
+    const goToPreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const goToNextPage = () => {
+        if (currentPage < pageNumber) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
     return (
         <div className={styles.paginationList}>
+            <div
+                className={`${styles.paginationItem} ${currentPage === 1 ? styles.disabled : ''}`}
+                onClick={goToPreviousPage}
+            >
+                &lt;
+            </div>
             {
                 pagesVisible &&
                 pagesVisible.map((page, index) =>
-                    <div className={`${styles.paginationItem} ${page === currentPage && styles.active}`} key={index} onClick={() => selectPageHandler(page)}>
+                    <div className={`${styles.paginationItem} ${page === currentPage && styles.active}`} key={index}
+                         onClick={() => selectPageHandler(page)}>
                         {page}
                     </div>)
             }
+            <div
+                className={`${styles.paginationItem} ${currentPage === pageNumber ? styles.disabled : ''}`}
+                onClick={goToNextPage}
+            >
+                &gt;
+            </div>
         </div>
     );
 };
