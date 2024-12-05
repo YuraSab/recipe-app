@@ -1,0 +1,9 @@
+
+
+.filterPanel{
+    display: flex;
+    justify-content: center;
+    padding: 40px 120px;
+    border-bottom: 1px black solid;
+    gap: 40px;
+}

@@ -1,26 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Recipes from "./pages/Recipes/Recipes";
+import {Link, Route, Routes} from "react-router-dom";
+import Recipe from "./pages/ChosenRecipe/ChosenRecipe";
+import "./App.css";
+import ChosenRecipes from "./pages/ChosenRecipes/ChosenRecipes";
+import WishList from "./components/WishList/WishList";
 
-function App() {
+const App = () => {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+        <div>
+            <header>
+                <nav>
+                    <Link to={"/recipes"}>Рецепти</Link>
+                    <Link to={"/recipes/chosen"}>Обрані рецепти</Link>
+                </nav>
+            </header>
+            {/*<Recipes/>*/}
+            <Routes>
+                <Route path={"/recipes"} element={<Recipes/>}/>
+                <Route path={"/"} element={<Recipes/>}/>
+                {/*<Route path={"*"} element={<Recipes/>}/>*/}
+                <Route path={`/recipes/:recipeId`} element={<Recipe/>}/>
+                {/*<Route path={`/recipes/chosen`} element={<ChosenRecipes/>}/>*/}
+                <Route path={`/recipes/chosen`} element={<WishList/>}/>
+            </Routes>
+        </div>
+    );
+};
 
 export default App;

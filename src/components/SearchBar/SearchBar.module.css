@@ -1,0 +1,30 @@
+.searchContainer{
+    display: flex;
+    align-items: center;
+    border: 2px black solid;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 300px;
+    height: 40px;
+}
+
+.searchContainer input{
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 16px;
+    color: black;
+    background-color: white;
+    border: none;
+    outline: none;
+}
+
+.searchContainer button{
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: white;
+    font-size: 28px;
+    cursor: pointer;
+}

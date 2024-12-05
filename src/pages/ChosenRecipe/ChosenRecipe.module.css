@@ -1,0 +1,21 @@
+.card{
+    padding: 60px 120px;
+}
+
+.card img{
+    width: 400px;
+    border-radius: 8px;
+}
+
+.videoBlock{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+}
+
+.videoBlock iframe{
+    width: 900px;
+    height: 506px;
+}
