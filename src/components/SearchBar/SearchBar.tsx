@@ -2,7 +2,8 @@ import React, {useEffect, useLayoutEffect, useState} from 'react';
 import styles from "./SearchBar.module.css";
 import {UpdateURLFunction} from "../../pages/Recipes/Recipes";
 import {useLocation} from "react-router-dom";
-import {useDebounce} from "../../hooks/UseDebounce";
+import {useDebounce} from "../../hooks/useDebounce";
+
 
 type SearchBarProps = {
     handleSearch: (query: string) => void,
@@ -34,14 +35,14 @@ const SearchBar:React.FC<SearchBarProps> = ({ handleSearch, updateURL }) => {
 
     return (
         <div className={styles.searchContainer}>
-                <input
-                    type={"text"}
-                    placeholder={"Пошук рецепту"}
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                />
+            <input
+                type={"text"}
+                placeholder={"Пошук рецепту"}
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+            />
         </div>
-);
+    );
 };
 
 export default SearchBar;
