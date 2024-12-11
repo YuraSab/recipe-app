@@ -1,12 +1,17 @@
 import React, {useLayoutEffect, useState} from 'react';
 import styles from "./Pagination.module.css";
+import {useLocation, useNavigate} from "react-router-dom";
 
 type PaginationProps = {
     currentPage: number,
     pageNumber: number,
     setCurrentPage: any,
+    updateURL: any
 }
-const Pagination: React.FC<PaginationProps> = ({currentPage, pageNumber, setCurrentPage}) => {
+const Pagination: React.FC<PaginationProps> = ({currentPage, pageNumber, setCurrentPage, updateURL}) => {
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [paginationNumbers, setPaginationNumbers] = useState<number[]>([]);
     const [pagesVisible, setPagesVisible] = useState<any[]>([]);
@@ -18,6 +23,7 @@ const Pagination: React.FC<PaginationProps> = ({currentPage, pageNumber, setCurr
         }
         setPaginationNumbers(pagesList);
     }
+
     useLayoutEffect(() => {
         pageNumberList();
     }, [currentPage, pageNumber]);
@@ -50,6 +56,7 @@ const Pagination: React.FC<PaginationProps> = ({currentPage, pageNumber, setCurr
         }
         setPagesVisible(visiblePages);
     }
+
     useLayoutEffect(() => {
         visiblePagination();
     }, [currentPage, paginationNumbers]);
@@ -71,6 +78,31 @@ const Pagination: React.FC<PaginationProps> = ({currentPage, pageNumber, setCurr
         }
     };
 
+
+    // useLayoutEffect(() => {
+    //     const params = new URLSearchParams(location.search);
+    //     const pageParams = params.get("page");
+    //     if (!pageParams) {
+    //         params.set("page", "1");
+    //         setCurrentPage(Number(1));
+    //         console.log("pageParams 1:",pageParams);
+    //         // navigate(`?page=1`);
+    //
+    //     } else {
+    //         params.set("page", pageParams || "");
+    //         // setCurrentPage(Number(pageParams));
+    //         console.log("pageParams 2:",pageParams);
+    //         setCurrentPage(Number(6));
+    //         // navigate(`?page=${pageParams}`);
+    //
+    //     }
+    // }, []);
+
+    const selectPageHandlerTwo = (page: string) => {
+        selectPageHandler(page);
+        updateURL({ page: page.toString() });
+    }
+
     return (
         <div className={styles.paginationList}>
             <div
@@ -83,8 +115,9 @@ const Pagination: React.FC<PaginationProps> = ({currentPage, pageNumber, setCurr
                 pagesVisible &&
                 pagesVisible.map((page, index) =>
                     <div className={`${styles.paginationItem} ${page === currentPage && styles.active}`} key={index}
-                         onClick={() => selectPageHandler(page)}>
-                        {page}
+                         // onClick={() => selectPageHandler(page)}>
+                         onClick={() => selectPageHandlerTwo(page)}>
+                    {page}
                     </div>)
             }
             <div

@@ -4,30 +4,35 @@ import styles from "./SearchBar.module.css";
 
 type SearchBarProps = {
     handleSearch: (query: string) => void,
+    updateURL: any
 }
-const SearchBar:React.FC<SearchBarProps> = ({ handleSearch }) => {
+const SearchBar:React.FC<SearchBarProps> = ({ handleSearch, updateURL }) => {
 
     const location = useLocation();
     const navigate = useNavigate();
 
     const [query, setQuery] = useState<string>("");
 
-    const updateSearchQuery = (value: string = "potato") => {
-        const params = new URLSearchParams(location.search);
-        if (query && query !== "") {
-            params.set("search", query);
-        } else {
-            params.delete("search");
-        }
-        const searchParam = params.get("search");
-        const linkSearchQuery = location.search.replace("?search=", "");
-        if (linkSearchQuery !== searchParam) {
-            params.set("search", query);
-            navigate(`?search=${query}`);
-        }
+    // const updateSearchQuery = (value: string = "potato") => {
+    //     const params = new URLSearchParams(location.search);
+    //     if (query && query !== "") {
+    //         params.set("search", query);
+    //     } else {
+    //         params.delete("search");
+    //     }
+    //     const searchParam = params.get("search");
+    //     const linkSearchQuery = location.search.replace("?search=", "");
+    //     if (linkSearchQuery !== searchParam) {
+    //         params.set("search", query);
+    //         navigate(`?search=${query}`);
+    //     }
+    //     handleSearch(query);
+    // }
+
+    const updateSearchQuery = () => {
+        updateURL({ search: query, page: "1" });
         handleSearch(query);
     }
-
 
     return (
         <div className={styles.searchContainer}>
