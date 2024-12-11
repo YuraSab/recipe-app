@@ -93,10 +93,8 @@ const Recipes = () => {
 
     useLayoutEffect(() => {
         const params = new URLSearchParams(location.search);
-        const searchParams = params.get("search") || "";
         const pageParams = parseInt(params.get("page") || "1");
         setPageLinkValue(pageParams);
-        console.log("URLSearchParams:", "1)", searchParams, "2)",pageParams);
     }, [location.search]);
 
 

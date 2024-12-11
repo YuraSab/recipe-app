@@ -29,13 +29,16 @@ const recipeSlice = createSlice({
             );
         },
         aggregateIngredients: (state) => {
-            // Присумовуємо інгрідієнти
             const ingredientsMap: { [key: string]: string } = {};
 
+            // Перебираємо всі рецепти
             state.selectedRecipes.forEach((recipe) => {
+                // Перебираємо інгредієнти за ключами 'strIngredient' + індекс
                 for (let i = 1; i <= 20; i++) {
-                    const ingredient = recipe[`strIngredient${i}` as keyof Recipe];
-                    const measure = recipe[`strMeasure${i}` as keyof Recipe];
+                    const ingredientKey = `strIngredient${i}` as keyof Recipe;
+                    const measureKey = `strMeasure${i}` as keyof Recipe;
+                    const ingredient = recipe[ingredientKey];
+                    const measure = recipe[measureKey];
 
                     if (ingredient && ingredient.trim() !== "") {
                         if (ingredientsMap[ingredient]) {
