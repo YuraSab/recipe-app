@@ -17,7 +17,10 @@ const recipeSlice = createSlice({
     reducers: {
         addRecipe: (state, action: PayloadAction<Recipe>) => {
             // Додаємо рецепт до списку
-            state.selectedRecipes.push(action.payload);
+            const isAdded = state.selectedRecipes.find(recipe => recipe.idMeal === action.payload.idMeal);
+            if (!isAdded) {
+                state.selectedRecipes.push(action.payload);
+            }
         },
         removeRecipe: (state, action: PayloadAction<string>) => {
             // Видаляємо рецепт зі списку
@@ -26,6 +29,7 @@ const recipeSlice = createSlice({
             );
         },
         aggregateIngredients: (state) => {
+            // Присумовуємо інгрідієнти
             const ingredientsMap: { [key: string]: string } = {};
 
             state.selectedRecipes.forEach((recipe) => {
