@@ -1,33 +1,14 @@
 import React, {useState} from 'react';
-import {useLocation, useNavigate} from "react-router-dom";
 import styles from "./SearchBar.module.css";
+import {UpdateURLFunction} from "../../pages/Recipes/Recipes";
 
 type SearchBarProps = {
     handleSearch: (query: string) => void,
-    updateURL: any
+    updateURL: UpdateURLFunction
 }
 const SearchBar:React.FC<SearchBarProps> = ({ handleSearch, updateURL }) => {
 
-    const location = useLocation();
-    const navigate = useNavigate();
-
     const [query, setQuery] = useState<string>("");
-
-    // const updateSearchQuery = (value: string = "potato") => {
-    //     const params = new URLSearchParams(location.search);
-    //     if (query && query !== "") {
-    //         params.set("search", query);
-    //     } else {
-    //         params.delete("search");
-    //     }
-    //     const searchParam = params.get("search");
-    //     const linkSearchQuery = location.search.replace("?search=", "");
-    //     if (linkSearchQuery !== searchParam) {
-    //         params.set("search", query);
-    //         navigate(`?search=${query}`);
-    //     }
-    //     handleSearch(query);
-    // }
 
     const updateSearchQuery = () => {
         updateURL({ search: query, page: "1" });
@@ -42,9 +23,7 @@ const SearchBar:React.FC<SearchBarProps> = ({ handleSearch, updateURL }) => {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
             />
-            <button onClick={() =>updateSearchQuery()}>
-                &#x260C;
-            </button>
+            <button onClick={updateSearchQuery}>&#x260C;</button>
         </div>
     );
 };

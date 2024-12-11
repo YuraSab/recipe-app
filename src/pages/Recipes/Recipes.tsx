@@ -8,6 +8,8 @@ import styles from "./Recipes.module.css";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import {useLocation, useNavigate} from "react-router-dom";
 
+export type UpdateURLFunction = (newParams: Record<string, string | null>) => void;
+
 const Recipes = () => {
 
     const location = useLocation();
@@ -15,31 +17,17 @@ const Recipes = () => {
 
     const [recipes, setRecipes] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [filterOn, setFilterOn] = useState<boolean>(false);
     const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
     const [filteredRecipes, setFilteredRecipes] = useState<any[]>([]);
 
-
-    const [searchLinkValue, setSearchLinkValue] = useState<string>("");
     const [pageLinkValue, setPageLinkValue] = useState<number>(1);
-
-
-    // useEffect(() => {
-    //     const params = new URLSearchParams(location.search);
-    //     const searchParams = params.get("search") || "";
-    //     const pageParams = parseInt(params.get("page") || "1");
-    //     setSearchLinkValue(searchParams);
-    //     setPageLinkValue(pageParams);
-    //     console.log("URLSearchParams:", "1)", searchParams, "2)",pageParams);
-    // }, [location.search]);
+    const [checkedCategories, setCheckedCategories] = useState<string[]>([]);
 
 
     const updateURL = (newParams: Record<string, string | null>) => {
         const params = new URLSearchParams(location.search);
-        console.log("updateURL: ", params);
-
         for (const key in newParams) {
             if (newParams[key]) {
                 params.set(key, newParams[key]!);
@@ -49,13 +37,6 @@ const Recipes = () => {
         }
         navigate(`?${params.toString()}`);
     }
-
-
-    // const getRecipesForCurrentPage = () => {
-    //     const startIndex = (currentPage - 1) * 20;
-    //     const endIndex = startIndex + 20;
-    //     return filteredRecipes.slice(startIndex, endIndex);
-    // };
 
     const getRecipesForCurrentPage = () => {
         const startIndex = (pageLinkValue - 1) * 20;
@@ -107,16 +88,12 @@ const Recipes = () => {
         let filtered = recipes;
         if (categoryFilters.length > 0) {
             filtered = recipes.filter((recipe) => categoryFilters.includes(recipe.strCategory));
-            // setCurrentPage(1);
             setPageLinkValue(1);
         }
         setFilteredRecipes(filtered);
 
         const count = Math.ceil(filtered.length / 20);
         setPageNumber(count);
-
-        // setCurrentPage(1);
-        // setPageLinkValue(1);
     }, [recipes, categoryFilters]);
 
 
@@ -124,19 +101,22 @@ const Recipes = () => {
         const params = new URLSearchParams(location.search);
         const searchParams = params.get("search") || "";
         const pageParams = parseInt(params.get("page") || "1");
-
-        // const pageParams = 5;
-        setSearchLinkValue(searchParams);
-        // setPageLinkValue(pageParams);
         setPageLinkValue(pageParams);
-        // setCurrentPage(pageParams);
-
         console.log("URLSearchParams:", "1)", searchParams, "2)",pageParams);
     }, [location.search]);
 
-    // useEffect(() => {
-    //     console.log("currentPage", currentPage);
-    // }, [currentPage]);
+
+    useEffect(() => {
+        const fetchFiltersFromURL = () => {
+            const params = new URLSearchParams(location.search);
+            const filters = params.get("filters") ? params.get("filters")!.split(",") : [];
+            if (filters.length > 0) {
+                setCheckedCategories(filters);
+                setCategoryFilters(filters);
+            }
+        }
+        fetchFiltersFromURL();
+    }, []);
 
     if (isLoading) return <div>Loading...</div>;
 
@@ -146,7 +126,7 @@ const Recipes = () => {
                 <SearchBar handleSearch={handleSearch} updateURL={updateURL}/>
                 <ButtonAction text={"Фільртувати"} action={() => setFilterOn((prev) => !prev)} />
             </div>
-            { filterOn && <FilterCard setCategoryFilters={setCategoryFilters} setFilterOn={setFilterOn}/> }
+            { filterOn && <FilterCard setCategoryFilters={setCategoryFilters} setFilterOn={setFilterOn} checkedCategories={checkedCategories} setCheckedCategories={setCheckedCategories}  updateURL={updateURL}/> }
             <RecipeList recipes={getRecipesForCurrentPage()} categoryFilters={categoryFilters}/>
             { pageNumber > 1 && filteredRecipes.length > 0 && <Pagination currentPage={pageLinkValue} pageNumber={pageNumber} setCurrentPage={setPageLinkValue} updateURL={updateURL}/> }
         </div>

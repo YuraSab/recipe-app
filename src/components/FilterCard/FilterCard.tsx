@@ -7,22 +7,28 @@ import {ButtonAction} from "../../ui/Buttons/Buttons";
 type FilterCardProps = {
     setCategoryFilters: any,
     setFilterOn: (arg: boolean) => void,
+    checkedCategories: string[],
+    setCheckedCategories: React.Dispatch<React.SetStateAction<string[]>>,
+    updateURL: any
 }
-const FilterCard: React.FC<FilterCardProps> = ({ setCategoryFilters, setFilterOn }) => {
+const FilterCard: React.FC<FilterCardProps> = ({ setCategoryFilters, setFilterOn, checkedCategories, setCheckedCategories, updateURL }) => {
 
     const [categories, setCategories] = useState<CategoryOfMeal[]>([]);
-    const [checkedCategories, setCheckedCategories] = useState<string[]>([]);
-
 
     const selectCategoryHandler = (selectedCategory: string) => {
         const isAddedCategory = checkedCategories.find((category) => category === selectedCategory);
         if (isAddedCategory) {
             setCheckedCategories((prev) => {
                 return prev.filter((category) => category !== selectedCategory);
-            })
+            });
         } else {
             setCheckedCategories((prev) => [...prev, selectedCategory]);
         }
+    }
+
+    const filtersSubmitHandler = () => {
+        setCategoryFilters(checkedCategories);
+        updateURL({ filters: checkedCategories.join(","), page: "1" });
     }
 
     useLayoutEffect(() => {
@@ -31,6 +37,7 @@ const FilterCard: React.FC<FilterCardProps> = ({ setCategoryFilters, setFilterOn
             setCategories(mealCategories);
         }
         fetchCategories();
+        console.log("checkedCategories",checkedCategories);
     }, []);
 
 
@@ -45,12 +52,13 @@ const FilterCard: React.FC<FilterCardProps> = ({ setCategoryFilters, setFilterOn
                             type={"checkbox"}
                             value={category.strCategory}
                             onChange={() => selectCategoryHandler(category.strCategory)}
+                            checked={checkedCategories.includes(category.strCategory)}
                         />
                     </div>)
                 }
             </div>
             <div className={styles.buttonSection}>
-                <ButtonAction text={"Застосувати"} action={() => setCategoryFilters(checkedCategories)}/>
+                <ButtonAction text={"Застосувати"} action={() => filtersSubmitHandler()}/>
             </div>
         </div>
     );
