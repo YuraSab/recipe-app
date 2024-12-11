@@ -2,6 +2,7 @@ import React, {useEffect, useLayoutEffect, useState} from 'react';
 import styles from "./SearchBar.module.css";
 import {UpdateURLFunction} from "../../pages/Recipes/Recipes";
 import {useLocation} from "react-router-dom";
+import {useDebounce} from "../../hooks/UseDebounce";
 
 type SearchBarProps = {
     handleSearch: (query: string) => void,
@@ -9,34 +10,27 @@ type SearchBarProps = {
 }
 const SearchBar:React.FC<SearchBarProps> = ({ handleSearch, updateURL }) => {
 
-    const location = useLocation();
-
     const [query, setQuery] = useState<string>("");
     const [previousQuery, setPreviousQuery] = useState<string>("");
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            console.log("query", query);
-            if (query !== previousQuery) {
-                setPreviousQuery(query);
-                updateURL({ search: query, page: "1" });
-                handleSearch(query);
-            }
-        }, 1500);
-        return () => clearTimeout(timer);
-    }, [query, updateURL, handleSearch]);
-
+    const location = useLocation();
+    const debouncedQuery = useDebounce(query, 1500);
 
     useLayoutEffect(() => {
         const params = new URLSearchParams(location.search);
         const searchParams = params.get("search") || "";
         setPreviousQuery(searchParams);
         setQuery(searchParams);
-    }, []);
+    }, [location.search]);
 
-    // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setQuery(event.target.value);
-    // }
+    useEffect(() => {
+        if (query !== previousQuery) {
+            setPreviousQuery(query);
+            updateURL({ search: query, page: "1" });
+            handleSearch(query);
+        }
+    }, [debouncedQuery, previousQuery, updateURL, handleSearch]);
+
 
     return (
         <div className={styles.searchContainer}>
@@ -45,7 +39,6 @@ const SearchBar:React.FC<SearchBarProps> = ({ handleSearch, updateURL }) => {
                     placeholder={"Пошук рецепту"}
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
-                    // onChange={handleInputChange}
                 />
         </div>
 );
