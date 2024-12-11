@@ -16,14 +16,12 @@ const Recipes = () => {
     const navigate = useNavigate();
 
     const [recipes, setRecipes] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [filterOn, setFilterOn] = useState<boolean>(false);
     const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
-    const [filteredRecipes, setFilteredRecipes] = useState<any[]>([]);
-
-    const [pageLinkValue, setPageLinkValue] = useState<number>(1);
     const [checkedCategories, setCheckedCategories] = useState<string[]>([]);
+    const [pageLinkValue, setPageLinkValue] = useState<number>(1);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
     const updateURL = (newParams: Record<string, string | null>) => {
@@ -41,13 +39,12 @@ const Recipes = () => {
     const getRecipesForCurrentPage = () => {
         const startIndex = (pageLinkValue - 1) * 20;
         const endIndex = startIndex + 20;
-        return filteredRecipes.slice(startIndex, endIndex);
+        return recipes.slice(startIndex, endIndex);
     };
 
     const handleSearch = async (query: string) => {
         if (!query || query === "") {
-            const allTheRecipes = await recipeService.fetchAllTheMeals();
-            setRecipes(allTheRecipes);
+            await fetchMeals();
         } else {
             try {
                 setIsLoading(true);
@@ -72,31 +69,6 @@ const Recipes = () => {
         }
     }
 
-    useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const searchParams = params.get("search");
-        if (searchParams) {
-            handleSearch(searchParams);
-        } else {
-            fetchMeals();
-        }
-    }, []);
-
-
-    useEffect(() => {
-        console.log(categoryFilters);
-        let filtered = recipes;
-        if (categoryFilters.length > 0) {
-            filtered = recipes.filter((recipe) => categoryFilters.includes(recipe.strCategory));
-            setPageLinkValue(1);
-        }
-        setFilteredRecipes(filtered);
-
-        const count = Math.ceil(filtered.length / 20);
-        setPageNumber(count);
-    }, [recipes, categoryFilters]);
-
-
     useLayoutEffect(() => {
         const params = new URLSearchParams(location.search);
         const searchParams = params.get("search") || "";
@@ -104,7 +76,6 @@ const Recipes = () => {
         setPageLinkValue(pageParams);
         console.log("URLSearchParams:", "1)", searchParams, "2)",pageParams);
     }, [location.search]);
-
 
     useEffect(() => {
         const fetchFiltersFromURL = () => {
@@ -118,6 +89,24 @@ const Recipes = () => {
         fetchFiltersFromURL();
     }, []);
 
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const searchParams = params.get("search");
+        if (searchParams) {
+            handleSearch(searchParams);
+        } else {
+            fetchMeals();
+        }
+    }, []);
+
+    useEffect(() => {
+        const filtered = recipes.filter((recipe) => categoryFilters.includes(recipe.strCategory));
+        const count = Math.ceil(filtered.length / 20);
+        setPageLinkValue(1);
+        setPageNumber(count);
+    }, [recipes, categoryFilters]);
+
+
     if (isLoading) return <div>Loading...</div>;
 
     return (
@@ -128,7 +117,7 @@ const Recipes = () => {
             </div>
             { filterOn && <FilterCard setCategoryFilters={setCategoryFilters} setFilterOn={setFilterOn} checkedCategories={checkedCategories} setCheckedCategories={setCheckedCategories}  updateURL={updateURL}/> }
             <RecipeList recipes={getRecipesForCurrentPage()} categoryFilters={categoryFilters}/>
-            { pageNumber > 1 && filteredRecipes.length > 0 && <Pagination currentPage={pageLinkValue} pageNumber={pageNumber} setCurrentPage={setPageLinkValue} updateURL={updateURL}/> }
+            { pageNumber > 1 && <Pagination currentPage={pageLinkValue} pageNumber={pageNumber} setCurrentPage={setPageLinkValue} updateURL={updateURL}/> }
         </div>
     );
 };

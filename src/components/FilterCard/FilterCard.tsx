@@ -46,7 +46,7 @@ const FilterCard: React.FC<FilterCardProps> = ({ setCategoryFilters, setFilterOn
             <div className={styles.closeTab} onClick={() => setFilterOn(false)}>&#10006;</div>
             <div className={styles.categoryList}>
                 {
-                    categories.map((category) => <div className={styles.categoryItem}>
+                    categories.map((category) => <div className={styles.categoryItem} key={category.idCategory}>
                         <h2>{category.strCategory}</h2>
                         <input
                             type={"checkbox"}

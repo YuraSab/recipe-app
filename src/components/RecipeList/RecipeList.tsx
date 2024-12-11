@@ -20,7 +20,8 @@ const RecipeList: React.FC<RecipeListProps> = ({recipes, categoryFilters, choose
     return (
         <div className={styles.cardList}>
             {
-                recipes.map((recipe) => <RecipeItem recipe={recipe} key={recipe.idMeal} choose={choose}/>)
+                // recipes.map((recipe) => <RecipeItem recipe={recipe} key={recipe.idMeal} choose={choose}/>)
+                filteredRecipes.map((recipe) => <RecipeItem recipe={recipe} key={recipe.idMeal} choose={choose}/>)
             }
         </div>
     );
