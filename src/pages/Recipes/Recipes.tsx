@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {recipeService} from "../../services/recipeService";
 import RecipeList from "../../components/RecipeList/RecipeList";
 import Pagination from "../../components/Pagination/Pagination";
@@ -6,7 +6,11 @@ import FilterCard from "../../components/FilterCard/FilterCard";
 import {ButtonAction} from "../../ui/Buttons/Buttons";
 import styles from "./Recipes.module.css";
 import SearchBar from "../../components/SearchBar/SearchBar";
+import {useLocation} from "react-router-dom";
+
 const Recipes = () => {
+
+    const location = useLocation();
 
     const [recipes, setRecipes] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -23,7 +27,7 @@ const Recipes = () => {
     };
 
     const handleSearch = async (query: string) => {
-        if (!query || query == "") {
+        if (!query || query === "") {
             const allTheRecipes = await recipeService.fetchAllTheMeals();
             setRecipes(allTheRecipes);
         } else {
@@ -39,20 +43,27 @@ const Recipes = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchMeals = async () => {
-            try {
-                const allMeals = await recipeService.fetchAllTheMeals();
-                setRecipes(allMeals);
-            } catch (error) {
-                console.error("Failed to fetch recipes");
-            } finally {
-                setIsLoading(false);
-            }
+    const fetchMeals = async () => {
+        try {
+            const allMeals = await recipeService.fetchAllTheMeals();
+            setRecipes(allMeals);
+        } catch (error) {
+            console.error("Failed to fetch recipes");
+        } finally {
+            setIsLoading(false);
         }
-        fetchMeals();
-        console.log(recipes);
+    }
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const searchParams = params.get("search");
+        if (searchParams) {
+            handleSearch(searchParams);
+        } else {
+            fetchMeals();
+        }
     }, []);
+
 
     useEffect(() => {
         console.log(categoryFilters);
@@ -67,6 +78,7 @@ const Recipes = () => {
 
         setCurrentPage(1);
     }, [recipes, categoryFilters]);
+
 
     if (isLoading) return <div>Loading...</div>;
 
